@@ -48,7 +48,7 @@ st.write(data_day)
 st.divider()
 
 #Sonhos
-st.title('Sonhos:stars:')
+st.title(':stars: Sonhos :sparkles:')
 st.subheader(f':date: Faltam {(data_ITA - data_atual).days} dias para o ITA :first_place_medal:')
 
 st.divider()
