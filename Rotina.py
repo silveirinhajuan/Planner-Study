@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime
+from datetime import timedelta, timezone
 import time
 
 def obter_saudacao():
@@ -17,7 +18,9 @@ def obter_saudacao():
 
 # Obtenha a data e hora atual
 agora = datetime.now()
-
+diferenca = timedelta(hours=-3)
+fuso_horario = timezone(diferenca)
+agora = agora.astimezone(fuso_horario)
 # Extraia os componentes da data e hora
 dia = agora.day
 ano = agora.year
@@ -47,8 +50,8 @@ st.write(data_day)
 
 st.divider()
 
-#Sonhos
 st.title(':stars: Sonhos :sparkles:')
+#Sonhos
 st.subheader(f':date: Faltam {(data_ITA - data_atual).days} dias para o ITA :first_place_medal:')
 
 st.divider()
