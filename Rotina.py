@@ -33,23 +33,66 @@ num = data_atual.weekday()
 dia_semanal = sem[num]
 
 # Carrega os dados do arquivo CSV
-data = pd.read_csv('./csvs/segunda.csv', encoding='utf-8')
+data_day = pd.read_csv(f'./csvs/{dia_semanal.lower()}.csv', encoding='utf-8')
 plot_hora = st.empty()
 
 saudacao = obter_saudacao()
 
 st.title(f"{saudacao}, Juan! :sunglasses:")
-st.subheader(f'{dia_semanal} :stars:')
+st.subheader(f':face_with_cowboy_hat: {dia_semanal} :face_with_cowboy_hat:')
 
 
-# Mostra os dados do DataFrame
-st.write(data)
+# Mostra os dados do DataFrame do dia
+st.write(data_day)
 
 st.divider()
 
 #Sonhos
 st.title('Sonhos:stars:')
 st.subheader(f':date: Faltam {(data_ITA - data_atual).days} dias para o ITA :first_place_medal:')
+
+st.divider()
+
+#Rotina Domingo
+st.title('Rotina Domingo')
+st.dataframe(pd.read_csv('./csvs/domingo.csv', encoding='utf-8'))
+
+st.divider()
+
+#Rotina Segunda
+st.title('Rotina Segunda')
+st.dataframe(pd.read_csv('./csvs/segunda.csv', encoding='utf-8'))
+
+st.divider()
+
+#Rotina Terça
+st.title('Rotina Terça')
+st.dataframe(pd.read_csv('./csvs/terça.csv', encoding='utf-8'))
+
+st.divider()
+
+#Rotina Quarta
+st.title('Rotina Quarta')
+st.dataframe(pd.read_csv('./csvs/quarta.csv', encoding='utf-8'))
+
+st.divider()
+
+#Rotina Quinta
+st.title('Rotina Quinta')
+st.dataframe(pd.read_csv('./csvs/quinta.csv', encoding='utf-8'))
+
+st.divider()
+
+#Rotina Sexta
+st.title('Rotina Sexta')
+st.dataframe(pd.read_csv('./csvs/sexta.csv', encoding='utf-8'))
+
+st.divider()
+
+#Rotina Sábado
+st.title('Rotina Sábado')
+st.dataframe(pd.read_csv('./csvs/sábado.csv', encoding='utf-8'))
+
 
 while True:
     plot_hora.title(f":alarm_clock:{(datetime.now()).strftime('%H:%M')}")
