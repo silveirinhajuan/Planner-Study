@@ -98,5 +98,5 @@ st.dataframe(pd.read_csv('./csvs/sábado.csv', encoding='utf-8'))
 
 
 while True:
-    plot_hora.title(f":alarm_clock:{(datetime.now()).strftime('%H:%M')}")
+    plot_hora.title(f":alarm_clock:{((datetime.now()).astimezone(fuso_horario)).strftime('%H:%M')}")
     time.sleep(0.1)
