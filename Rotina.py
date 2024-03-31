@@ -4,17 +4,6 @@ from datetime import datetime
 from datetime import timedelta, timezone
 import time
 
-def obter_saudacao():
-    hora_atual = datetime.now().hour
-
-    if 6 <= hora_atual < 12:
-        return "Bom dia"
-    elif 12 <= hora_atual < 18:
-        return "Boa tarde"
-    elif 18 <= hora_atual < 24:
-        return "Boa noite"
-    else:
-        return "Boa madrugada"
 
 # Obtenha a data e hora atual
 agora = datetime.now()
@@ -25,6 +14,18 @@ agora = agora.astimezone(fuso_horario)
 dia = agora.day
 ano = agora.year
 mês = agora.month
+
+def obter_saudacao():
+    hora_atual = (datetime.now().astimezone(fuso_horario)).hour
+
+    if 6 <= hora_atual < 12:
+        return "Bom dia"
+    elif 12 <= hora_atual < 18:
+        return "Boa tarde"
+    elif 18 <= hora_atual < 24:
+        return "Boa noite"
+    else:
+        return "Boa madrugada"
 
 sem = ("Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo")
 
