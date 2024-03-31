@@ -20,7 +20,7 @@ def remover_tarefa(tarefa):
                 arquivo.write(f"{t}\n")
 
 # Adiciona a lista de tarefas à barra lateral
-st.title("À fazeres")
+st.title("Afazeres")
 nova_tarefa = st.text_input("Adicionar nova tarefa:")
 if st.button("Adicionar"):
     adicionar_tarefa(nova_tarefa)
