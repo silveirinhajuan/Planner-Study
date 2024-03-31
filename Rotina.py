@@ -15,25 +15,6 @@ def obter_saudacao():
     else:
         return "Boa madrugada"
 
-def obter_tarefas():
-    try:
-        with open("tarefas.txt", "r") as arquivo:
-            tarefas = arquivo.readlines()
-        return [tarefa.strip() for tarefa in tarefas]
-    except FileNotFoundError:
-        return []
-
-def adicionar_tarefa(tarefa):
-    with open("tarefas.txt", "a") as arquivo:
-        arquivo.write(f"{tarefa}\n")
-
-def remover_tarefa(tarefa):
-    tarefas = obter_tarefas()
-    with open("tarefas.txt", "w") as arquivo:
-        for t in tarefas:
-            if t != tarefa:
-                arquivo.write(f"{t}\n")
-
 # Obtenha a data e hora atual
 agora = datetime.now()
 
@@ -54,9 +35,12 @@ dia_semanal = sem[num]
 # Carrega os dados do arquivo CSV
 data = pd.read_csv('./csvs/segunda.csv', encoding='utf-8')
 plot_hora = st.empty()
+
 saudacao = obter_saudacao()
+
 st.title(f"{saudacao}, Juan! :sunglasses:")
 st.subheader(f'{dia_semanal} :stars:')
+
 
 # Mostra os dados do DataFrame
 st.write(data)
@@ -66,23 +50,6 @@ st.divider()
 #Sonhos
 st.title('Sonhos:stars:')
 st.subheader(f':date: Faltam {(data_ITA - data_atual).days} dias para o ITA :first_place_medal:')
-
-# Adiciona a lista de tarefas à barra lateral
-st.sidebar.title("À fazeres")
-nova_tarefa = st.sidebar.text_input("Adicionar nova tarefa:")
-if st.sidebar.button("Adicionar"):
-    adicionar_tarefa(nova_tarefa)
-tarefas = obter_tarefas()
-if tarefas:
-    st.sidebar.write("## Tarefas:")
-    for i, tarefa in enumerate(tarefas):
-        # Adiciona checkbox para marcar a tarefa como concluída
-        concluido = st.sidebar.checkbox(f"{i + 1}. {tarefa}")
-        if concluido:
-            # Remove a tarefa quando marcada como concluída
-            remover_tarefa(tarefa)
-else:
-    st.sidebar.write("Nenhuma tarefa adicionada ainda.")
 
 while True:
     plot_hora.title(f":alarm_clock:{(datetime.now()).strftime('%H:%M')}")
