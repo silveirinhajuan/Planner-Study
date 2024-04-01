@@ -10,7 +10,7 @@ def obter_tarefas():
 
 def adicionar_tarefa(tarefa):
     with open("tarefas.txt", "a") as arquivo:
-        arquivo.write(f"{tarefa}\n")
+        arquivo.write(f":eyes: {tarefa}\n")
 
 def remover_tarefa(tarefa):
     tarefas = obter_tarefas()
@@ -20,7 +20,7 @@ def remover_tarefa(tarefa):
                 arquivo.write(f"{t}\n")
 
 # Adiciona a lista de tarefas à barra lateral
-st.title("Afazeres")
+st.title(":ledger: Afazeres")
 nova_tarefa = st.text_input("Adicionar nova tarefa:")
 if st.button("Adicionar"):
     adicionar_tarefa(nova_tarefa)

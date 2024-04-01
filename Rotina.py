@@ -1,9 +1,8 @@
 import streamlit as st
 import pandas as pd
-from datetime import datetime
-from datetime import timedelta, timezone
+from datetime import datetime, timedelta, timezone
 import time
-
+import random
 
 # Obtenha a data e hora atual
 agora = datetime.now()
@@ -43,8 +42,8 @@ plot_hora = st.empty()
 saudacao = obter_saudacao()
 
 st.title(f"{saudacao}, Juan! :sunglasses:")
-st.subheader(f':face_with_cowboy_hat: {dia_semanal} :face_with_cowboy_hat:')
 
+st.subheader(f':face_with_cowboy_hat: {dia_semanal} :face_with_cowboy_hat:')
 
 # Mostra os dados do DataFrame do dia
 st.write(data_day)
@@ -97,6 +96,12 @@ st.divider()
 st.title('Rotina Sábado')
 st.dataframe(pd.read_csv('./csvs/sábado.csv', encoding='utf-8'))
 
+# Exibir Fórmula Aleatória
+st.sidebar.subheader('Fórmula Aleatória')
+if st.sidebar.button('Exibir'):
+    formulas = pd.read_csv('./formulas.csv')
+    random_formula = random.choice(formulas['formula'].tolist())
+    st.sidebar.latex(random_formula)
 
 while True:
     plot_hora.title(f":alarm_clock:{((datetime.now()).astimezone(fuso_horario)).strftime('%H:%M')}")

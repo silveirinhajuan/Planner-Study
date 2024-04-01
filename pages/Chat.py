@@ -2,7 +2,7 @@ from openai import OpenAI
 import streamlit as st
 import os
 
-st.title("Assistente de Rotina")
+st.title(":robot_face: Assistente de Rotina :robot_face:")
 
 client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
