@@ -2,14 +2,14 @@ import streamlit as st
 
 def obter_tarefas():
     try:
-        with open("tarefas.txt", "r") as arquivo:
+        with open("tarefas.txt", "r", encoding='utf-8') as arquivo:
             tarefas = arquivo.readlines()
         return [tarefa.strip() for tarefa in tarefas]
     except FileNotFoundError:
         return []
 
 def adicionar_tarefa(tarefa):
-    with open("tarefas.txt", "a") as arquivo:
+    with open("tarefas.txt", "a", encoding='utf-8') as arquivo:
         arquivo.write(f":eyes: {tarefa}\n")
 
 def remover_tarefa(tarefa):
