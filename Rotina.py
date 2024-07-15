@@ -4,6 +4,18 @@ from datetime import datetime, timedelta, timezone
 import time
 import random
 
+import streamlit as st
+
+st.set_page_config(
+    page_title="Rotina Cavalesca",
+    page_icon="📅",
+    layout="wide",
+    initial_sidebar_state="expanded",
+    menu_items={
+        'About': "# App de rotinas. feito de *juan* para *juan*!"
+    }
+)
+
 # Obtenha a data e hora atual
 agora = datetime.now()
 diferenca = timedelta(hours=-3)
