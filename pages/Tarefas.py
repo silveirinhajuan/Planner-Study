@@ -18,6 +18,7 @@ def remover_tarefa(tarefa):
         for t in tarefas:
             if t != tarefa:
                 arquivo.write(f"{t}\n")
+    st.balloons()
 
 # Adiciona a lista de tarefas à barra lateral
 st.title(":ledger: Afazeres")

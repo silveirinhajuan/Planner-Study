@@ -30,7 +30,7 @@ sem = ("Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo")
 
 # Crie uma instância de datetime com os componentes de data
 data_atual = datetime(ano, mês, dia)
-data_ITA = datetime(2024, 10, 8)
+data_ITA = datetime(2024, 10, 13)
 # Verifique que dia é hoje de acordo com o padrão de data em inglês ex:(2021/05/10)
 num = data_atual.weekday()
 dia_semanal = sem[num]
