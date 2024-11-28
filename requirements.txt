@@ -1,2 +1,4 @@
-pandas
-streamlit
+ollama==0.4.1
+pandas==2.0.3
+plotly==5.24.1
+streamlit==1.40.0

@@ -1,5 +1,16 @@
-titulo,formula
-
-Lei de Coulomb,F = k \frac{ |q_1 \cdot q_2| }{r^2}
-Lei dos Gases Ideais,PV = nRT
-Princípio da Incerteza,\Delta x \cdot \Delta p \geq \frac{h}{4\pi}
+"id","question","answer","date_added","next_appearance","tags"
+"1","Lei de Coulomb","F = k \frac{ |q_1 \cdot q_2| }{r^2}","2024-11-26 12:00:00","2024-11-29 00:47:49.776697","física"
+"2","Lei dos Gases Ideais","PV = nRT","2024-11-26 12:00:00","2024-11-29 00:47:54.195826","química"
+"3","Princípio da Incerteza","\Delta x \cdot \Delta p \geq \frac{h}{4\pi}","2024-11-26 12:00:00","2024-11-28 00:48:04.820666","física"
+"4","Volume do Cubo","V = a^3","2024-11-26 12:00:00","2024-11-29 00:48:09.693397","matemática"
+"5","Área da Superfície do Cubo","A = 6a^2","2024-11-26 12:00:00","2024-11-29 00:48:14.448065","matemática"
+"6","Expansão binomial","(a + b)^n = \sum_{k=0}^{n} C_n^k a^{n-k}b^k","2024-11-27 00:20:16","2024-11-28 00:48:18.797813","matemática"
+"7","Teorema de Pitágoras","a^2 + b^2 = c^2","2024-11-27 03:30:09","2024-11-28 00:48:21.837919","geometria,triângulos"
+"8","Equação de Torricelli","v^2 = v_0^2 + 2a\Delta s","2024-11-27 03:30:09","2024-11-28 00:48:26.082410","cinemática,física"
+"10","Fórmula de Bhaskara","x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}","2024-11-27 03:30:09","2024-11-28 00:48:30.201065","álgebra,equações quadráticas"
+"11","Frequência de uma Onda","f = \frac{v}{\lambda}","2024-11-27 03:30:09","2024-11-29 00:48:34.333551","ondulatória,física"
+"12","Energia Cinética","E_c = \frac{mv^2}{2}","2024-11-27 03:30:09","2024-11-28 00:48:37.522207","mecânica,física"
+"13","Lei da Gravitação Universal","F = G\frac{m_1m_2}{r^2}","2024-11-27 03:30:09","2024-11-28 00:48:43.141325","gravitação,física"
+"14","Lei de Ohm","V = RI","2024-11-27 03:30:09","2024-11-28 00:48:49.217797","eletrodinâmica,física"
+"15","Quantidade de Movimento","p = mv","2024-11-27 03:30:09","2024-11-28 00:48:52.732630","mecânica,física"
+"16","Capacidade de um Capacitor","C = \frac{Q}{V}","2024-11-27 03:30:09","2024-11-28 00:48:57.595830","eletrostática,física"

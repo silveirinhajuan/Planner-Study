@@ -1,215 +1,160 @@
 import streamlit as st
+import sqlite3
 from datetime import datetime, timedelta
-import time
-from datetime import datetime
 import pandas as pd
+import plotly.express as px
+import plotly.graph_objs as go
 
-st.title(":alarm_clock:Temporizador:alarm_clock:")
+class EstudosTracker:
+    def __init__(self, db_path='estudos_tracker.db'):
+        """Initialize database connection and create tables if not exist"""
+        self.conn = sqlite3.connect(db_path, check_same_thread=False)
+        self.create_tables()
 
-col1, col2, col3 = st.columns(3)
-with col1:
-    plot_hour = st.metric(label="hour", value=00)   
-with col2:
-    plot_minute = st.metric(label="Minuto", value=00)
-with col3:
-    plot_second = st.metric(label="Segundo", value=00)
+    def create_tables(self):
+        """Create database tables for tracking study sessions"""
+        cursor = self.conn.cursor()
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS study_sessions (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                start_time DATETIME,
+                end_time DATETIME,
+                subject TEXT,
+                performance INTEGER,
+                session_duration REAL,
+                idle_time REAL
+            )
+        ''')
+        self.conn.commit()
 
-def cronometro():
-    second = 0
-    minute = 0
-    hour = 0
-    while True:
-        if second < 60:
-            plot_second.metric(label="Segundo", value=second)
-            second += 1
-            time.sleep(1)
-        elif minute < 60:
-            second = 0
-            minute += 1
-            plot_second.metric(label="Segundo", value=second)
-            plot_minute.metric(label="Minuto", value=minute)
-            time.sleep(1)
-        else:
-            second = 0
-            minute = 0
-            hour += 1
-            plot_second.metric(label="Segundo", value=second)
-            plot_minute.metric(label="Minuto", value=minute)
-            plot_hour.metric(label="Hour", value=hour)
-            time.sleep(1)
-            
-def salvar_horario_inicio():
-    horario_inicio = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    with open("./horarios/horarios.csv", "a") as file:
-        file.write(f'{horario_inicio},')
-    
-
-def salvar_horario_final():
-    horario_final = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    with open("./horarios/horarios.csv", 'a') as file:
-        file.write(f'{horario_final}\n')  
-    
-         
-
-with col1:                    
-    if st.button("Estudando", type="primary"):
-        salvar_horario_inicio()
-        cronometro()
+    def insert_study_session(self, start_time, end_time, subject, performance, idle_time):
+        """Insert a new study session into the database"""
+        duration = (end_time - start_time).total_seconds() / 3600  # duration in hours
         
-with col3:
-    if st.button("Descansar"):
-        salvar_horario_final()
+        cursor = self.conn.cursor()
+        cursor.execute('''
+            INSERT INTO study_sessions 
+            (start_time, end_time, subject, performance, session_duration, idle_time) 
+            VALUES (?, ?, ?, ?, ?, ?)
+        ''', (start_time, end_time, subject, performance, duration, idle_time))
+        self.conn.commit()
 
-st.divider()
+    def get_study_sessions(self):
+        """Retrieve all study sessions"""
+        query = "SELECT * FROM study_sessions ORDER BY start_time"
+        return pd.read_sql_query(query, self.conn)
 
-#st.dataframe(df_estudo)
+    def calculate_metrics(self):
+        """Generate comprehensive study metrics"""
+        df = self.get_study_sessions()
+        
+        metrics = {
+            'total_study_time': df['session_duration'].sum(),
+            'total_sessions': len(df),
+            'avg_daily_study_time': df.groupby(pd.to_datetime(df['start_time']).dt.date)['session_duration'].sum().mean(),
+            'subject_time': df.groupby('subject')['session_duration'].sum(),
+            'avg_performance_by_subject': df.groupby('subject')['performance'].mean(),
+            'avg_performance': df['performance'].mean(),
+            'consecutive_study_days': self.calculate_consecutive_study_days(df)
+        }
+        
+        return metrics
 
-#lógica aqui
+    def calculate_consecutive_study_days(self, df):
+        """Calculate maximum number of consecutive study days"""
+        df['date'] = pd.to_datetime(df['start_time']).dt.date
+        unique_dates = df['date'].unique()
+        unique_dates.sort()
+        
+        max_consecutive = 0
+        current_consecutive = 1
+        
+        for i in range(1, len(unique_dates)):
+            if (unique_dates[i] - unique_dates[i-1]).days == 1:
+                current_consecutive += 1
+                max_consecutive = max(max_consecutive, current_consecutive)
+            else:
+                current_consecutive = 1
+        
+        return max_consecutive
 
-def horas():
-    today = datetime.now().strftime('%Y-%m-%d')
-    horas_hoje = 0
-    horas_semanal = 0
-    horas_mensal = 0
-    horas_anual = 0
+def main():
+    st.title('🎓 Estudos ITA Tracker')
+    tracker = EstudosTracker()
 
-    # Carregar os dados do CSV
-    dados_estudo_csv = pd.read_csv('./horarios/horarios.csv')
+    # Sidebar for navigation
+    menu = ["Registrar Sessão", "Métricas e Análises", "Histórico de Sessões"]
+    choice = st.sidebar.selectbox("Menu", menu)
 
-    # Criar o DataFrame
-    df_estudo = pd.DataFrame(dados_estudo_csv)
-
-    # Converter as colunas 'inicio' e 'termino' para datetime
-    df_estudo['inicio'] = pd.to_datetime(df_estudo['inicio'])
-    df_estudo['termino'] = pd.to_datetime(df_estudo['termino'])
-
-    # Definir os intervalos de tempo
-    start_semanal = datetime.now() - timedelta(days=7)
-    start_mensal = datetime.now() - timedelta(days=30)
-    start_anual = datetime.now() - timedelta(days=365)
-
-    # Filtrar as linhas que correspondem ao dia atual
-    df_hoje = df_estudo[df_estudo['inicio'].dt.strftime('%Y-%m-%d') == today]
-
-    # Filtrar as linhas que correspondem aos últimos 7 dias
-    df_semanal = df_estudo[df_estudo['inicio'] >= start_semanal]
-
-    # Filtrar as linhas que correspondem aos últimos 30 dias
-    df_mensal = df_estudo[df_estudo['inicio'] >= start_mensal]
-
-    # Filtrar as linhas que correspondem aos últimos 365 dias
-    df_anual = df_estudo[df_estudo['inicio'] >= start_anual]
-
-    # Calcular o total de horas de estudo do dia
-    for index, row in df_hoje.iterrows():
-        horas_hoje += (row['termino'] - row['inicio']).total_seconds() / 3600
-
-    # Calcular o total de horas de estudo da última semana
-    for index, row in df_semanal.iterrows():
-        horas_semanal += (row['termino'] - row['inicio']).total_seconds() / 3600
-
-    # Calcular o total de horas de estudo do último mês
-    for index, row in df_mensal.iterrows():
-        horas_mensal += (row['termino'] - row['inicio']).total_seconds() / 3600
-
-    # Calcular o total de horas de estudo do último ano
-    for index, row in df_anual.iterrows():
-        horas_anual += (row['termino'] - row['inicio']).total_seconds() / 3600
-
-    return (horas_hoje, horas_semanal, horas_mensal, horas_anual, df_hoje, df_semanal, df_mensal, df_anual)
+    if choice == "Registrar Sessão":
+        st.header("Registrar Nova Sessão de Estudo")
+        
+        # Study Session Input
+        col1, col2 = st.columns(2)
+        with col1:
+            start_time = st.time_input("Hora de Início")
+            subject = st.selectbox("Matéria", 
+                ["Matemática", "Física", "Química", "Português", "Inglês", "Redação", "Correções", "Simulado"])
+        
+        with col2:
+            end_time = st.time_input("Hora de Término", datetime.now().time())
+            performance = st.slider("Rendimento da Sessão", 1, 10, 5)
+        
+        idle_time_input = st.number_input("Tempo Ocioso (minutos)", min_value=0.0, step=5.0)
+        
+        if st.button("Salvar Sessão"):
+            # Combine date with time inputs
+            today = datetime.now().date()
+            start_datetime = datetime.combine(today, start_time)
+            end_datetime = datetime.combine(today, end_time)
             
+            # Handle time crossing midnight
+            if end_datetime < start_datetime:
+                end_datetime += timedelta(days=1)
+            
+            tracker.insert_study_session(
+                start_datetime, 
+                end_datetime, 
+                subject, 
+                performance, 
+                idle_time_input/60  # convert to hours
+            )
+            st.success("Sessão registrada com sucesso!")
 
+    elif choice == "Métricas e Análises":
+        st.header("Análise de Desempenho")
+        
+        metrics = tracker.calculate_metrics()
+        
+        # Metrics Display
+        col1, col2, col3 = st.columns(3)
+        col1.metric("Tempo Total de Estudo", f"{metrics['total_study_time']:.2f} horas")
+        col2.metric("Média Diária", f"{metrics['avg_daily_study_time']:.2f} horas")
+        col3.metric("Dias Consecutivos", metrics['consecutive_study_days'])
+        
+        # Subject Time Pie Chart
+        st.subheader("Tempo por Matéria")
+        fig_subject_time = px.pie(
+            values=metrics['subject_time'], 
+            names=metrics['subject_time'].index, 
+            title="Distribuição de Tempo de Estudo"
+        )
+        st.plotly_chart(fig_subject_time)
+        
+        # Performance Bar Chart
+        st.subheader("Rendimento por Matéria")
+        fig_performance = px.bar(
+            x=metrics['avg_performance_by_subject'].index, 
+            y=metrics['avg_performance_by_subject'].values,
+            labels={'x': 'Matéria', 'y': 'Rendimento Médio'},
+            title="Rendimento Médio por Matéria"
+        )
+        st.plotly_chart(fig_performance)
 
-def delta():
-    pass
+    elif choice == "Histórico de Sessões":
+        st.header("Histórico Completo de Sessões")
+        df = tracker.get_study_sessions()
+        st.dataframe(df)
 
-
-horas_diaria = int(horas()[0])
-delta_diario = 0
-
-horas_semanais = int(horas()[1])
-delta_semanal = 0
-
-horas_mensais = int(horas()[2])
-delta_mensal = 0
-
-horas_anuais = int(horas()[3])
-delta_anual = 0
-
-
-st.metric(
-    label='Hoje',
-    value=f"{horas_diaria}h",
-    delta=delta_diario,
-)
-
-# Função para calcular o tempo de estudo e descanso
-def processar_dados(df):
-    # Converter as colunas 'inicio' e 'termino' para datetime
-    df['inicio'] = pd.to_datetime(df['inicio'])
-    df['termino'] = pd.to_datetime(df['termino'])
-    
-    # Ordenar os dados por 'inicio'
-    df = df.sort_values(by='inicio').reset_index(drop=True)
-    
-    # Calcular as horas de estudo e descanso
-    df['horas_estudo'] = (df['termino'] - df['inicio']).dt.total_seconds() / 3600
-    df['horas_descanso'] = df['inicio'].shift(-1) - df['termino']
-    df['horas_descanso'] = df['horas_descanso'].dt.total_seconds() / 3600
-    
-    # Ajustar a última linha que não terá tempo de descanso calculado
-    df.loc[df.index[-1], 'horas_descanso'] = 0
-
-    return df
-
-# Carregar os dados do CSV
-df_estudo = pd.read_csv('./horarios/horarios.csv')
-
-# Processar os dados para calcular tempo de estudo e descanso
-df_processado = processar_dados(df_estudo)
-
-# Imprimir o DataFrame processado para depuração
-print(df_processado)
-
-# Agrupar por dia e somar as horas de estudo e descanso
-df_diario = df_processado.groupby(df_processado['inicio'].dt.date).agg({
-    'horas_estudo': 'sum',
-    'horas_descanso': 'sum'
-}).reset_index()
-
-# Renomear a coluna para 'dia' para facilitar a plotagem
-df_diario.rename(columns={'inicio': 'dia'}, inplace=True)
-
-# Imprimir o DataFrame diário para depuração
-print(df_diario)
-
-# Plotar os dados usando Streamlit
-st.title('Horas de Estudo e Descanso Diárias')
-
-# Plotar o gráfico de área
-st.area_chart(df_diario.set_index('dia'))
-
-col4, col5, col6, col7 = st.columns(4)
-
-with col4:
-    st.metric(
-        label="Semanal", 
-        value=f"{horas_semanais}h",
-        delta=delta_semanal,
-    )
-    
-with col5:
-    st.metric(
-        label="Mensal",
-        value=f"{horas_mensais}h",
-        delta=delta_mensal
-    )
-    
-with col6:
-    st.metric(
-        label="Anual",
-        value=f"{horas_anuais}h",
-        delta=delta_anual        
-    )
-
-    
+if __name__ == "__main__":
+    main()

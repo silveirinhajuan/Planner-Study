@@ -42,7 +42,7 @@ sem = ("Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo")
 
 # Crie uma instância de datetime com os componentes de data
 data_atual = datetime(ano, mês, dia)
-data_ITA = datetime(2024, 10, 13)
+data_ITA = datetime(2024, 12, 20)
 # Verifique que dia é hoje de acordo com o padrão de data em inglês ex:(2021/05/10)
 num = data_atual.weekday()
 dia_semanal = sem[num]
@@ -64,7 +64,7 @@ st.divider()
 
 st.title(':stars: Sonhos :sparkles:')
 #Sonhos
-st.subheader(f':date: Faltam {(data_ITA - data_atual).days} dias para o ITA :first_place_medal:')
+st.subheader(f':date: Faltam {(data_ITA - data_atual).days} dias para a P3 OBA :first_place_medal:')
 
 st.divider()
 
@@ -108,13 +108,10 @@ st.divider()
 st.title('Rotina Sábado')
 st.dataframe(pd.read_csv('./csvs/sábado.csv', encoding='utf-8'))
 
-# Exibir Fórmula Aleatória
-st.sidebar.subheader('Fórmula Aleatória')
-if st.sidebar.button('Exibir'):
-    formulas = pd.read_csv('./formulas.csv')
-    random_formula = random.choice(formulas['formula'].tolist())
-    st.sidebar.latex(random_formula)
-
-while True:
+@st.fragment(run_every=1)
+def exibir_hora():
     plot_hora.title(f":alarm_clock:{((datetime.now()).astimezone(fuso_horario)).strftime('%H:%M')}")
-    time.sleep(0.1)
+    
+
+exibir_hora()
+
