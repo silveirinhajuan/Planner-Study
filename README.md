@@ -93,7 +93,7 @@ The project's dependencies are listed in the `requirements.txt` file:
 
 You can find a demonstration of the project in the following file:
 
-[Video demonstration](./video/RotinaPy.mp4)
+![video](video/RotinaPy.mp4)
 
 ## 🤝 Contributing
 
