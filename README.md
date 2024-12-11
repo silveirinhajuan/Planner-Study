@@ -40,8 +40,6 @@ RotinaPy is an application developed with Streamlit to assist in personal organi
 |style.css
 |tarefas.txt
 |utils.py 
-|video
- |  -RotinaPy.mp4
 ```
 
 ## 🛠️ Installation
@@ -93,7 +91,15 @@ The project's dependencies are listed in the `requirements.txt` file:
 
 You can find a demonstration of the project in the following file:
 
-![video](video/RotinaPy.mp4)
+
+
+https://github.com/user-attachments/assets/dca8382d-5387-4404-b6ce-655a63bac277
+
+
+
+## 📝 Acknowledgments
+
+Part of the Flashcards page code was inspired by the [Flashcard repository](https://github.com/raman-r-4978/flashcard/tree/main?tab=readme-ov-file) by **raman-r-4978**. Many thanks for sharing your work!
 
 ## 🤝 Contributing
 
